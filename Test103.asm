@@ -25,7 +25,7 @@ assume cs:code,ds:data,ss:stack
 			dtoc:
 				dc0:
 				jcxz dc1
-				div ax
+				div ax		;除法溢出准备改进
 				add dx,30h
 				pop dx
 				mov cx,dx
