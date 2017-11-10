@@ -46,8 +46,7 @@ assume cs:code
 					
 					after:			;后续处理
 						mov ax,sp	
- 						mov cx,30
-						sub ax,cx	;判断栈是否已经到底（数据出栈完毕）
+						sub ax,30	;判断栈是否已经到底（数据出栈完毕）
 						mov cx,ax
 						jcxz next	;出栈结束跳转到next
 						pop ax
