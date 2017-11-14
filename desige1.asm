@@ -22,18 +22,49 @@ assume cs:code
 				mov bx,0
 				mov cx,21
 				format:
+					push cx
+					mov si,0
+					
+					mov ah,2
 					mov al,[bx]
+					mov cx,4
+					call trans
 					
+					mov al,20h
+					mov cx,6
+					call trans
 					
+					mov dx,[bx+86]
+					mov ax,[bx+84]
+					mov di,10
+					call dtoc
+					
+					add bx,4
+					pop cx
 				loop format
-				
-				
-				
+
 			mov ax,4C00H
 			int 21H
 			
-			display:
+			trans:
+				mov [bx+si+210],ax
+				inc si
+			loop trans
+			ret
 			
+			dtoc:
+				compmod:
+					mov cx,ax
+					jcxz enterstack
+					div di
+					add dx,30h
+					push dx
+					mov dx,0
+				loop compmod
+				
+				enterstack:
+				
+			ret	
 			
 			
 			
