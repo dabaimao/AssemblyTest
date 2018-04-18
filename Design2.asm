@@ -15,20 +15,20 @@ INSTALL segment
 			   db "4) set clock",10
 			   db 10
 			   db "@shawnping testOS copyright",0
-			wt db 64 dup(0)			;等待输入字符行
-;------------------------------------------
+			wt db 64 dup(0)				;等待输入字符行
+;------------------------------------------------------------
 		MENU:
 			call clear					;清屏
 			mov ax,seg md
 			mov ds,ax
 			mov si,offset md
-			call DISPLAY				;显示菜单
 
 		SELECT:							;选择等待
+			call DISPLAY				;显示菜单
 			mov ah,0
 			int 16h
-
-			cmp al,
+			cmp al,33H
+			jz TIMEDIS
 		jmp SELECT
 
 			mov ax,4C00H
@@ -40,16 +40,16 @@ INSTALL segment
 			int 19H	
 ;=============================================================三号时钟程序
 		TD0 db "CALENDAR",10
-		TD1 db 0,0,"Y ",0,0,"M ",0,0,"D ",10
+		TD1 db 0,0,"Y/",0,0,"M/",0,0,"D",10
 		TD2 db "TIME",10
-		TD3 db 0,0,"H ",0,0,"M ",0,0,"S ",0
+		TD3 db 0,0,"H:",0,0,"M:",0,0,"S",0
 		TIMEDIS:
 			call clear				;清屏
 			mov ax,seg TD0			;设置display子程序显示数据源
 			mov ds,ax
-			mov si,offset TD0
 		CLOCK:
 ;------------------------------------------BIOS时钟读取和显示程序
+			mov si,offset TD0
 			mov al,9
 			call HTOD
 			mov TD1[0],ah
@@ -80,7 +80,14 @@ INSTALL segment
 			mov TD3[8],ah
 			mov TD3[9],al
 			call DISPLAY
+			push ax
+			in al,60H
+			cmp al,01H
+			jz BACK_MENU3
+			pop ax
 		jmp CLOCK
+		BACK_MENU3:
+			jmp MENU
 ;------------------------------------------十六进制转十进制显示程序
 		HTOD:
 			out 70H,al
@@ -93,13 +100,9 @@ INSTALL segment
 			add ah,30H
 			add al,30H
 		ret
-		back_menuc:
-			jmp MENU
-;=============================================================四号设置时间
-		SET_CLO:
-
-;=============================================================返回菜单子程序
-		RET_MENU:
+;=============================================================输入字符分析和显示子程序
+		STR_INPUT_DIS:
+			
 			
 
 
